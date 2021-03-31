@@ -8,7 +8,7 @@ _Link to project:_ https://geraldiner.com/acnh-bgm-irl
 # How It's Made:
 _Tech used:_ HTML, CSS, JavaScript, ACNH API, Weatherbit API
 
-For those unfamiliar with Animal Crossing, one of the unique features of the game is that there is different background music (BGM) for each hour of the day. Thanks to the folks at the [ACNH API] (https://acnhapi.com), I was able to take the JSON data for the hourly background music and match it to the local time based on the browser. So, just by coming to the site, the BGM for your local time will start playing IRL (in real life).
+For those unfamiliar with Animal Crossing, one of the unique features of the game is that there is different background music (BGM) for each hour of the day. Thanks to the folks at the [ACNH API](https://acnhapi.com), I was able to take the JSON data for the hourly background music and match it to the local time based on the browser. So, just by coming to the site, the BGM for your local time will start playing IRL (in real life).
 
 After looking through the data, there are also three different versions for sunny, rainy, and snowy weather (though tbh it the rainy and snowy versions sound a lot alike..). This gave me the idea to find the weather data for the viewer's location using the coordinates via Geolocation and passing it through the Weatherbit API. 
 
