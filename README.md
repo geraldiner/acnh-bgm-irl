@@ -17,33 +17,29 @@ I'm still considering this my 0.1 version, aka the "YES IT FINALLY WORKS" versio
 
 ### Functionality
 
-- I'm not sure my `fetch` requests are written as nicely as they could be. I definitely have to go back and refactor it
-- On the same note, I don't think it's necessary to update the weather info as frequently as the time (ie. every minute/second vs every hour, respectively), so I could make use of localStorage somehow
+- I'm not sure my `fetch` requests are written as nicely as they could be. I definitely have to go back and refactor it.
+- On the same note, I don't think it's necessary to update the weather info as frequently as the time (ie. every minute/second vs every hour, respectively), so I could make use of localStorage somehow.
 
 ### Time-related
 
-- The time doesn't actually update - it's stuck at the exact moment the viewer enters the site and then never updates again
-- Displaying the full day and date might be more helpful because it has more information
+- The time doesn't actually update - it's stuck at the exact moment the viewer enters the site and then never updates again.
+- Displaying the full day and date might be more helpful because it has more information.
 
 ### Design
 
-- Maybe using a framework like Bootstrap will give it a nice clean look
-- Having a cool background image would be nice, something either related to the location, weather, Animal Crossing or 
+- Maybe using a framework like Bootstrap will give it a nice clean look.
+- Having a cool background image would be nice, something either related to the location, weather, Animal Crossing or some combination.
 
 ### Would be nice
 
 - For viewers who'd like to be more private, they could enter their location info manually instead of allowing the site to access it. This would mean more cases to account for.
-- For weather conditions like rain or snow, it would be cool to have actual weather sounds. Or maybe even sliders for ambient noises that the viewer could control
+- For weather conditions like rain or snow, it would be cool to have actual weather sounds. Or maybe even sliders for ambient noises that the viewer could control and make it their own.
  
 # Lessons Learned:
  
-I consider this one of my mini passion projects. I love Animal Crossing and playing it. So finding an API and 
+I consider this one of my mini passion projects. I love playing Animal Crossing, so finding an API to do cool stuff with got me hyped about coding. I definitely got to refresh my knowledge of working on APIs. Especially with the new syntax, it was a real challenge to get the data back correctly. 
  
-# Examples:
-Take a look at these couple examples that I have in my own portfolio:
+# Other Projects:
+Take a look at other cool stuff I've worked on:
  
 *JS Challenges:** https://geraldiner.com/jschallenges/
- 
-*Twitter Battle:** https://github.com/alecortega/twitter-battle
- 
-*Patch Panel:** https://github.com/alecortega/patch-panel
