@@ -3,10 +3,10 @@ Listen to the Animal Crossing hourly background music (BGM) in real life (IRL) b
 
 Disclaimer: I do not own any of the content presented here.
  
-*Link to project:* https://geraldiner.com/acnh-bgm-irl
+_Link to project:_ https://geraldiner.com/acnh-bgm-irl
  
 # How It's Made:
-*Tech used:* HTML, CSS, JavaScript, ACNH API, Weatherbit API
+_Tech used:_ HTML, CSS, JavaScript, ACNH API, Weatherbit API
 
 For those unfamiliar with Animal Crossing, one of the unique features of the game is that there is different background music (BGM) for each hour of the day. Thanks to the folks at the (ACNH API) [https://acnhapi.com], I was able to take the JSON data for the hourly background music and match it to the local time based on the browser. So, just by coming to the site, the BGM for your local time will start playing IRL (in real life).
 
@@ -42,4 +42,4 @@ I consider this one of my mini passion projects. I love playing Animal Crossing,
 # Other Projects:
 Take a look at other cool stuff I've worked on:
  
-*JS Challenges:** https://geraldiner.com/jschallenges/
+_JS Challenges:_ https://geraldiner.com/jschallenges/
