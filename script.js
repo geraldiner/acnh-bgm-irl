@@ -1,0 +1,111 @@
+function checkGeolocation() {
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+	}
+}
+
+//Get latitude and longitude;
+function successFunction(position) {
+	lat = position.coords.latitude;
+	long = position.coords.longitude;
+	setupPage(lat, long)
+}
+
+function errorFunction(e) {
+	console.log(e)
+}
+
+function setupPage(lat, long) {
+	let hTime = document.querySelector('#time')
+	let pLoc = document.querySelector('#location')
+	let audio = document.querySelector('#audio')
+  let source = document.querySelector('#audioSource');
+
+	console.log(lat + "," + long)
+	let time = new Date()
+	let hour = time.getHours()
+	let month = time.getMonth()
+	let date = time.getDate()
+	let year = time.getYear()
+
+	let timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true });
+
+	hTime.textContent = timeStr
+
+	fetchWeather(lat,long).then(weather => {
+		let data = weather['data'][0]
+		let city = data.city_name
+		let state = data.state_code
+		let country = data.country_code
+		let temp = data.temp
+		let desc = data.weather.description
+		let icon = data.weather.icon
+		let code = data.weather.code
+		pLoc.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
+		let img = document.createElement('img')
+		img.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
+		pLoc.appendChild(img)
+	})
+	
+	fetchBGMJSON().then(bgm => {
+		let keys = Object.keys(bgm)
+		for(let i = 0; i < keys.length; i++) {
+			if (bgm[keys[i]].hour == hour) {
+				console.log(bgm[keys[i]])
+				source.src = bgm[keys[i]].music_uri
+				audio.load()
+				//audio.play()
+			}
+		}
+	})
+}
+
+async function fetchBGMJSON() {
+	const endpoint = 'https://raw.githubusercontent.com/alexislours/ACNHAPI/master/hourly.json'
+	const response = await fetch(endpoint)
+	const bgm = await response.json()
+	return bgm
+}
+
+async function fetchWeather(lat,long) {
+	const endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
+	const response = await fetch(endpoint)
+	const weather = await response.json()
+	return weather
+}
+
+//setInterval(checkGeolocation, 1000)
+
+function geocodeLatLng(geocoder, map, infowindow) {
+	// const input = document.getElementById("latlng").value;
+	// const latlngStr = input.split(",", 2);
+	// const latlng = {
+	// 	lat: parseFloat(latlngStr[0]),
+	// 	lng: parseFloat(latlngStr[1]),
+	// };
+	geocoder.geocode({ location: latlng }, (results, status) => {
+		if (status === "OK") {
+			for (var i = 0; i < results.length; i++) {
+				if (results[i].types[0] == 'administrative_area_level_1') {
+					console.log(results[i].formatted_address)
+				}
+			}
+
+			if (results[0]) {
+				map.setZoom(11);
+				const marker = new google.maps.Marker({
+					position: latlng,
+					map: map,
+				});
+				infowindow.setContent(results[0].formatted_address);
+				infowindow.open(map, marker);
+			} else {
+				window.alert("No results found");
+			}
+		} else {
+			window.alert("Geocoder failed due to: " + status);
+		}
+	});
+}
+
+window.addEventListener('load',	checkGeolocation);//Check if browser supports W3C Geolocation API
