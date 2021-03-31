@@ -1,5 +1,5 @@
 # Animal Crossing BGM IRL
-Write a short sentence or two about this project and what it does. Be sure to include a link and a screenshot (we're front end devs o we can actually see our work!).
+Listen to the Animal Crossing hourly background music (BGM) in real life (IRL) based on *your* local time and weather.
  
 *Link to project:* https://geraldiner.com/acnh-bgm-irl
  
