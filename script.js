@@ -81,24 +81,25 @@ function setWeatherHtml() {
 }
 
 function setTimeHtml() {
-	if (inputBool) {
-		
-	} else {
-
-	}
-	let time = new Date()
 	let hour
 	let month
 	let date
 	let year
 	let timeStr
+	let time = new Date()
+	let options = { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true }
 
 	hour = time.getHours()
 	month = time.getMonth()
 	date = time.getDate()
 	year = time.getYear()
 
-	timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
+
+
+	if (inputBool || weatherData) {
+		options.timeZone = weatherData.timezone
+	}
+	timeStr = time.toLocaleString('en-US', options);
 
 	timeHtml.textContent = timeStr
 
@@ -110,7 +111,8 @@ function setAudio(time) {
 		let keys = Object.keys(bgm)
 		for (let i = 0; i < keys.length; i++) {
 			if (bgm[keys[i]].hour == time.getHours()) {
-				let weatherBGM = determineWeather()
+				let
+					weatherBGM = determineWeather()
 				if (weatherBGM == bgm[keys[i]].weather) {
 					audioSource.src = bgm[keys[i]].music_uri
 					audioHtml.load()
@@ -144,6 +146,15 @@ function determineWeather() {
 	return 'Sunny'
 }
 
+async function fetchTime(time, timestamp) {
+	let endpoint = `https://maps.googleapis.com/maps/api/timezone/json?location=${weatherData.lat},%20${weatherData.long}&timestamp=${timestamp}&key=AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM`
+	let localTime
+
+	const response = await fetch(endpoint)
+	const timeInfo = await response.json()
+	return timeInfo
+}
+
 async function fetchBGMJSON() {
 	const endpoint = 'https://raw.githubusercontent.com/alexislours/ACNHAPI/master/hourly.json'
 	const response = await fetch(endpoint)
@@ -170,13 +181,13 @@ async function fetchWeather(lat, long, city, queryType) {
 	} else if (queryType == 'latlong') {
 		endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	}
-	console.log(endpoint)
 	response = await fetch(endpoint)
 	weather = await response.json().then(info => {
 		let data = info['data'][0]
 		weatherData = {
 			'lat': data.lat,
 			'long': data.lon,
+			'timezone': data.timezone,
 			'city': data.city_name,
 			'state': data.state_code,
 			'country': data.country_code,
@@ -192,61 +203,13 @@ async function fetchWeather(lat, long, city, queryType) {
 	locationForm.reset()
 }
 
-function formatWeather(data) {
-	weatherData = {
-		'lat': data.lat,
-		'long': data.lon,
-		'city': data.city_name,
-		'state': data.state_code,
-		'country': data.country_code,
-		'temp': data.temp,
-		'desc': data.weather.description,
-		'img': `https://www.weatherbit.io/static/img/icons/${data.weather.icon}.png`,
-		'code': data.weather.code,
-		'str': `In ${this.city}, it's ${this.temp}°F. There might be ${this.desc}.`
-	}
-}
-
 function geocodeAddress(geocoder) {
-	let googleApi = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
-  let cityName = weatherData.desc
-  geocoder.geocode({ address: cityName }, (results, status) => {
-    if (status === "OK") {
-      console.log("YA")
-    } else {
-      alert("Geocode was not successful for the following reason: " + status);
-    }
-  });
-}
-
-function geocodeLatLng(geocoder, map, infowindow) {
-	// const input = document.getElementById("latlng").value;
-	// const latlngStr = input.split(",", 2);
-	// const latlng = {
-	// 	lat: parseFloat(latlngStr[0]),
-	// 	lng: parseFloat(latlngStr[1]),
-	// };
-	geocoder.geocode({ location: latlng }, (results, status) => {
+	let cityName = weatherData.desc
+	geocoder.geocode({ address: cityName }, (results, status) => {
 		if (status === "OK") {
-			for (var i = 0; i < results.length; i++) {
-				if (results[i].types[0] == 'administrative_area_level_1') {
-					console.log(results[i].formatted_address)
-				}
-			}
-
-			if (results[0]) {
-				map.setZoom(11);
-				const marker = new google.maps.Marker({
-					position: latlng,
-					map: map,
-				});
-				infowindow.setContent(results[0].formatted_address);
-				infowindow.open(map, marker);
-			} else {
-				window.alert("No results found");
-			}
+			console.log(results)
 		} else {
-			window.alert("Geocoder failed due to: " + status);
+			alert("Geocode was not successful for the following reason: " + status);
 		}
 	});
 }
