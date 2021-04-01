@@ -229,12 +229,12 @@ async function fetchWeather(lat, long, city, queryType) {
 
 async function fetchPhoto() {
 	let bgImgData
-	let endpoint = `https://api.unsplash.com/photos/?client_id=${unsplashAccessKey}&query=${weatherData.country}&per_page=2`
+	let endpoint = `https://api.unsplash.com/search/photos?page=1&query=${weatherData.city}&client_id=${unsplashAccessKey}&orientation=landscape`
 	endpoint = endpoint.replace(/\s/g, "%20")
 	console.log(endpoint)
 	let response = await fetch(endpoint)
 	let photo = await response.json().then(info => {
-		let data = info[0]
+		let data = info.results[0]
 		bgImgData = {
 			'alt': data.alt_information,
 			'links': data.links,
