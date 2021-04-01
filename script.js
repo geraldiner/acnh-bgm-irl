@@ -17,7 +17,6 @@
 
 // API Keys
 const weatherApiKey = 'e0c580a040dd46a0829e6bf541d02ce4'
-const googleApiKey = 'AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
 const unsplashAccessKey = 'k8WhCa_ZwWjj6XixJCy8r1z-2KMao8qpeVltgUxWEzs'
 
 // HTML variables from DOM
@@ -71,6 +70,11 @@ function setHtml(e) {
 }
 
 function setWeatherHtml() {
+	if (weatherData == {}) {
+		console.log("this works here")
+	} else {
+		console.log("else statement")
+	}
 	fetchWeather(lat, long, '', 'latlong')
 
 	// Is there location access or not?
