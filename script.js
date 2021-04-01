@@ -61,12 +61,13 @@ function successFunction(position) {
 }
 
 function errorFunction(e) {
+	console.log("we in here")
 	console.log(e)
 }
 
 function setHtml(lat, long) {
 	if (inputBool) {
-		console.log("we in here")
+
 	} else {
 		let currTime = setTimeHtml()
 		fetchWeather(lat, long, "", 'latlong').then(weather => {
