@@ -141,9 +141,8 @@ function setAudio(time) {
 				if (weatherBGM == bgm[keys[i]].weather) {
 					audioSource.src = bgm[keys[i]].music_uri
 					audioHtml.load()
-					//audioHtml.play()
+					audioHtml.play()
 				}
-
 			}
 		}
 	})
