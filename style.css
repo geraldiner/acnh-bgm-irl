@@ -19,8 +19,8 @@ body {
 }
 
 .container {
-	width: 50vw;
-	height: 50vh;
+	min-width: 50vw;
+	min-height: 50vh;
 	left: 3rem;
 	bottom: 3rem;
 	position: fixed;
