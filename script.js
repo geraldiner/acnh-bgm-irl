@@ -5,7 +5,6 @@
 	Listen to the Animal Crossing hourly background music (BGM) in real life (IRL) based on *your* local time and weather. Chill lo-fi music for study/sleep/relaxation.
 
 	### Functionality
-	- For viewers who'd like to be more private, they could enter their location info manually instead of allowing the site to access it. This would mean more cases to account for.
 	- On the same note, I don't think it's necessary to update the weather info as frequently as the time (ie. every minute/second vs every hour, respectively), so I could make use of localStorage somehow.
 
 
@@ -37,8 +36,6 @@ let audioSource = document.querySelector('#audioSource')
 let lat
 let long
 let inputBool
-
-
 
 const locationData = JSON.parse(localStorage.getItem("locationData")) || {}
 const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}
@@ -85,25 +82,25 @@ function setWeatherHtml() {
 
 function setTimeHtml() {
 	if (inputBool) {
-
+		
 	} else {
 
 	}
-	// let time = new Date()
-	// let hour
-	// let month
-	// let date
-	// let year
-	// let timeStr
+	let time = new Date()
+	let hour
+	let month
+	let date
+	let year
+	let timeStr
 
-	// hour = time.getHours()
-	// month = time.getMonth()
-	// date = time.getDate()
-	// year = time.getYear()
+	hour = time.getHours()
+	month = time.getMonth()
+	date = time.getDate()
+	year = time.getYear()
 
-	// timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
+	timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
 
-	// timeHtml.textContent = timeStr
+	timeHtml.textContent = timeStr
 
 	return time
 }
@@ -210,7 +207,17 @@ function formatWeather(data) {
 	}
 }
 
-//setInterval(checkGeolocation, 1000)
+function geocodeAddress(geocoder) {
+	let googleApi = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
+  let cityName = weatherData.desc
+  geocoder.geocode({ address: cityName }, (results, status) => {
+    if (status === "OK") {
+      console.log("YA")
+    } else {
+      alert("Geocode was not successful for the following reason: " + status);
+    }
+  });
+}
 
 function geocodeLatLng(geocoder, map, infowindow) {
 	// const input = document.getElementById("latlng").value;
@@ -252,6 +259,7 @@ locationForm.addEventListener('submit', (e) => {
 })
 
 setInterval(setTimeHtml, 1000)
+setInterval(setWeatherHtml, 3600)
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
