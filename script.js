@@ -1,3 +1,26 @@
+/*
+	Animal Crossing BGM IRL
+	Author: Geraldine | https://geraldiner.com
+
+	Listen to the Animal Crossing hourly background music (BGM) in real life (IRL) based on *your* local time and weather. Chill lo-fi music for study/sleep/relaxation.
+
+	### Functionality
+	- For viewers who'd like to be more private, they could enter their location info manually instead of allowing the site to access it. This would mean more cases to account for.
+	- On the same note, I don't think it's necessary to update the weather info as frequently as the time (ie. every minute/second vs every hour, respectively), so I could make use of localStorage somehow.
+
+	### Time-related
+	- The time doesn't actually update - it's stuck at the exact moment the viewer enters the site and then never updates again.
+	- Displaying the full day and date might be more helpful because it has more information.
+
+	### Design
+	- Maybe using a framework like Bootstrap will give it a nice clean look.
+	- Having a cool background image would be nice, something either related to the location, weather, Animal Crossing or some combination.
+
+	### Would be nice
+	- For weather conditions like rain or snow, it would be cool to have actual weather sounds. Or maybe even sliders for ambient noises that the viewer could control and make it their own.
+*/
+
+let timeHtml = document.querySelector('#time') // where to display the time
 
 let lat
 let long

@@ -1,7 +1,7 @@
 # Animal Crossing BGM IRL
 Listen to the Animal Crossing hourly background music (BGM) in real life (IRL) based on *your* local time and weather. Chill lo-fi music for study/sleep/relaxation.
 
-Disclaimer: I do not own any of the content presented here.
+Disclaimer: I do not own any of the audio media presented here.
  
 **Link to project:** https://geraldiner.com/acnh-bgm-irl
  

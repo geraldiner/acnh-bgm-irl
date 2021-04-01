@@ -13,17 +13,26 @@
 </head>
 
 <body>
-	<section class="container">
-		<form>
-			<input type="text" id="city" placeholder="Enter the city you're in" />
-			<button type="button" id="btn">Submit</button>
-			</form>
-			<h1 id="time"></h1>
-		<p id="location"></p>
-		<audio id="audio" name="media" controls loop>
-			<source id="audioSource" src="" type="audio/mpeg">
-		</audio>
-		
+
+	<section class="wrap">
+		<section class="container">
+			<section id="form">
+				<form>
+					<input type="text" id="city" placeholder="Where are you? (city, country)" />
+					<button type="button" id="btn">Submit</button>
+				</form>
+			</section>
+			<section id="description">
+				<h1 id="time"></h1>
+				<p id="location"></p>
+				<p id="weather"></p>
+			</section>
+			<section id="audio">
+				<audio id="audio" name="media" controls loop>
+					<source id="audioSource" src="" type="audio/mpeg">
+				</audio>
+			</section>
+		</section>
 	</section>
 </body>
 

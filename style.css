@@ -1,47 +1,50 @@
-		/* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-		#map {
-			height: 100%;
-		}
+* {
+	margin: 0;
+	padding: 0;
+	font-size: 16pt;
+	font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
 
-		/* Optional: Makes the sample page fill the window. */
-		html,
-		body {
-			height: 100%;
-			margin: 0;
-			padding: 0;
-		}
+body {
+	background-color: #00b08a;
+}
 
-		#floating-panel {
-			position: absolute;
-			top: 10px;
-			left: 25%;
-			z-index: 5;
-			background-color: #fff;
-			padding: 5px;
-			border: 1px solid #999;
-			text-align: center;
-			font-family: "Roboto", "sans-serif";
-			line-height: 30px;
-			padding-left: 10px;
-		}
+.wrap {
+	width: 50vw;
+  height: 50vh;
+	margin: auto;
+	display: flex;
+	align-items: center;
+}
 
-		#floating-panel {
-			position: absolute;
-			top: 5px;
-			left: 50%;
-			margin-left: -180px;
-			width: 350px;
-			z-index: 5;
-			background-color: #fff;
-			padding: 5px;
-			border: 1px solid #999;
-		}
+.container {
+	width: 50%;
+	left: 3rem;
+	bottom: 3rem;
+	position: fixed;
+	margin: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	padding: 1.25rem;
+	background-color: rgba(255,255,255,0.8);
+	border-radius: 10px;
+}
 
-		#latlng {
-			width: 225px;
-		}
+#city {
+	width: 80%;
+	padding: 10px;
+	border-radius: 5px;
+}
 
-		#btn {
-			color: red;
-		}
+#btn {
+	border: 1px solid #ccc;
+	background-color: lightblue;
+	border-radius: 5px;
+	padding: 10px;
+}
+
+#description, #audio {
+	display: none;
+}
