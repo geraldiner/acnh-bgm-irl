@@ -20,24 +20,40 @@
 	- For weather conditions like rain or snow, it would be cool to have actual weather sounds. Or maybe even sliders for ambient noises that the viewer could control and make it their own.
 */
 
-let timeHtml = document.querySelector('#time') // where to display the time
+// HTML variables from DOM
+
+let cityInput = document.querySelector('#cityInput')
+let submitBtn = document.querySelector('#btn')
+
+let timeHtml = document.querySelector('#time')
+let locationHtml = document.querySelector('#location')
+let weatherHtml = document.querySelector('#weather')
+
+let audioHtml = document.querySelector('#audio')
+let audioSource = document.querySelector('#audioSource')
+
+// Variables for processing
 
 let lat
 let long
 
-//const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}};
+const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {};
 
+/* 
+	Check to see if the viewer will allow location access through the browser
+*/
 function checkGeolocation() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
 	}
 }
 
-//Get latitude and longitude;
+// Get latitude and longitude;
 function successFunction(position) {
 	lat = position.coords.latitude;
 	long = position.coords.longitude;
-	setHtml(lat, long)
+	console.log(lat, long)
+	// setHtml(lat, long)
 }
 
 function errorFunction(e) {
@@ -174,6 +190,8 @@ function doStuff() {
 	})
 }
 
-window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
+window.addEventListener('load', checkGeolocation)
 
-window.addEventListener('load', doStuff)
+// window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
+
+// window.addEventListener('load', doStuff)

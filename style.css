@@ -1,12 +1,13 @@
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 	font-size: 16pt;
 	font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 }
 
 body {
-	background-color: #00b08a;
+	background: #00b08a;
 }
 
 .wrap {
@@ -26,21 +27,31 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	text-align: center;
-	padding: 1.25rem;
+	padding: 1rem 0.75rem;
 	background-color: rgba(255,255,255,0.8);
 	border-radius: 10px;
 }
 
-#city {
-	width: 80%;
+.container > * {
+	margin: auto;
+}
+
+#cityInput {
+	width: 100%;
 	padding: 10px;
+	border: none;
 	border-radius: 5px;
+	margin-top: 20px;
+}
+
+#cityLabel {
+	text-align: left;
 }
 
 #btn {
-	border: 1px solid #ccc;
+	width: 100%;
 	background-color: lightblue;
+	border: none;
 	border-radius: 5px;
 	padding: 10px;
 }
