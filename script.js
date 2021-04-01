@@ -18,6 +18,7 @@
 // API Keys
 const weatherApiKey = 'e0c580a040dd46a0829e6bf541d02ce4'
 const googleApiKey = 'AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
+const unsplashAccessKey = 'k8WhCa_ZwWjj6XixJCy8r1z-2KMao8qpeVltgUxWEzs'
 
 // HTML variables from DOM
 
@@ -41,8 +42,9 @@ let lat
 let long
 let inputBool
 
-const locationData = JSON.parse(localStorage.getItem("locationData")) || {}
+const hourData = JSON.parse(localStorage.getItem("hourData")) || 0
 const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}
+const bgImgData = JSON.parse(localStorage.getItem("bgImgData")) || {}
 
 /* 
 	Check to see if the viewer will allow location access through the browser
@@ -64,24 +66,28 @@ function successFunction(position) {
 function setHtml(e) {
 	setWeatherHtml()
 	let time = setTimeHtml()
+	setBackgroundHtml()
 	setAudio(time)
 }
 
 function setWeatherHtml() {
+	fetchWeather(lat, long, '', 'latlong')
+
 	// Is there location access or not?
-	if (inputBool) {
-		//get weather data
-		if (!weatherData || weatherData.city != cityInput.value) {
-			fetchWeather('', '', cityInput.value, 'city')
-		}
-	} else {
-		if (!weatherData) {
-			fetchWeather(lat, long, '', 'latlong')
-		}
-	}
+	// if (inputBool) {
+	// 	//get weather data
+	// 	if (!weatherData || weatherData.city != cityInput.value) {
+	// 		fetchWeather('', '', cityInput.value, 'city')
+	// 	}
+	// } else {
+	// 	if (!weatherData) {
+	// 		fetchWeather(lat, long, '', 'latlong')
+	// 	}
+	// }
 	weatherIconHtml.src = weatherData.img
 	weatherDescHtml.textContent = weatherData.str
 	descHtml.style.display = 'flex'
+	document.querySelector('.container').style.justifyContent = 'center'
 }
 
 function setTimeHtml() {
@@ -98,7 +104,11 @@ function setTimeHtml() {
 	date = time.getDate()
 	year = time.getYear()
 
+	localStorage.setItem("hourData", JSON.stringify(hour))
 
+	if (hour != hourData) {
+		localStorage.setItem("hourData", JSON.stringify(hour))
+	}
 
 	if (inputBool || weatherData) {
 		options.timeZone = weatherData.timezone
@@ -108,6 +118,17 @@ function setTimeHtml() {
 	timeHtml.textContent = timeStr
 
 	return time
+}
+
+function setBackgroundHtml() {
+	let body = document.getElementsByTagName('body')[0]
+	fetchPhoto()
+	body.style.background = `url('${bgImgData.urls.full}')`
+	body.style.backgroundAttachment = 'fixed'
+	body.style.backgroundRepeat = 'no-repeat'
+	body.style.backgroundPositionX = 'center'
+	body.style.backgroundPositionY = 'center'
+	body.style.backgroundSize = 'cover'
 }
 
 function setAudio(time) {
@@ -204,7 +225,26 @@ async function fetchWeather(lat, long, city, queryType) {
 		weatherData.str = str
 	})
 	localStorage.setItem("weatherData", JSON.stringify(weatherData))
-	locationForm.reset()
+	//locationForm.reset()
+}
+
+async function fetchPhoto() {
+	let bgImgData
+	let endpoint = `https://api.unsplash.com/photos/?client_id=${unsplashAccessKey}&query=${weatherData.country}&per_page=2`
+	endpoint = endpoint.replace(/\s/g, "%20")
+	console.log(endpoint)
+	let response = await fetch(endpoint)
+	let photo = await response.json().then(info => {
+		let data = info[0]
+		bgImgData = {
+			'alt': data.alt_information,
+			'links': data.links,
+			'urls': data.urls,
+			'author': data.user
+		}
+	})
+	localStorage.setItem("bgImgData", JSON.stringify(bgImgData))
+	return photo
 }
 
 function geocodeAddress(geocoder) {
@@ -219,11 +259,11 @@ function geocodeAddress(geocoder) {
 }
 
 window.addEventListener('load', checkGeolocation)
-locationForm.addEventListener('submit', (e) => {
-	e.preventDefault()
-	inputBool = true
-	setHtml(e)
-})
+// locationForm.addEventListener('submit', (e) => {
+// 	e.preventDefault()
+// 	inputBool = true
+// 	setHtml(e)
+// })
 
 setInterval(setTimeHtml, 1000)
 

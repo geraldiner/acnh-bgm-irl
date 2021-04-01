@@ -27,14 +27,13 @@ body {
 	margin: auto;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	padding: 1rem 0.75rem;
 	background-color: rgba(255,255,255,0.8);
 	border-radius: 10px;
 }
 
 .container > * {
-	margin: auto;
+	margin: 0 auto;
 }
 
 #cityInput {
