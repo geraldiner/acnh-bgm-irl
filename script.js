@@ -16,8 +16,8 @@
 */
 
 // API keys
-const const weatherApiKey: 'e0c580a040dd46a0829e6bf541d02ce4'
-const googleApiKey: 'AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
+const weatherApiKey = 'e0c580a040dd46a0829e6bf541d02ce4'
+const googleApiKey = 'AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
 
 
 // HTML variables from DOM
