@@ -259,7 +259,6 @@ locationForm.addEventListener('submit', (e) => {
 })
 
 setInterval(setTimeHtml, 1000)
-setInterval(setWeatherHtml, 3600)
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
