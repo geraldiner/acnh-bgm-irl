@@ -65,33 +65,36 @@ function errorFunction(e) {
 }
 
 function setHtml(lat, long) {
-	setTimeHtml()
-	fetchWeather(lat, long, "", 'latlong').then(weather => {
-		let data = weather['data'][0]
-		let city = data.city_name
-		let state = data.state_code
-		let country = data.country_code
-		let temp = data.temp
-		let desc = data.weather.description
-		let icon = data.weather.icon
-		let code = data.weather.code
+	if (inputBool) {
+		console.log("we in here")
+	} else {
+		let currTime = setTimeHtml()
+		fetchWeather(lat, long, "", 'latlong').then(weather => {
+			let data = weather['data'][0]
+			let city = data.city_name
+			let state = data.state_code
+			let country = data.country_code
+			let temp = data.temp
+			let desc = data.weather.description
+			let icon = data.weather.icon
+			let code = data.weather.code
 
-		weatherDescHtml.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
-		console.log(icon)
-		weatherIconHtml.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
-	})
+			weatherDescHtml.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
+			weatherIconHtml.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
+		})
 
-	// fetchBGMJSON().then(bgm => {
-	// 	let keys = Object.keys(bgm)
-	// 	for (let i = 0; i < keys.length; i++) {
-	// 		if (bgm[keys[i]].hour == hour) {
-	// 			console.log(bgm[keys[i]])
-	// 			audioSource.src = bgm[keys[i]].music_uri
-	// 			audioHtml.load()
-	// 			//audioHtml.play()
-	// 		}
-	// 	}
-	// })
+		fetchBGMJSON().then(bgm => {
+			let keys = Object.keys(bgm)
+			for (let i = 0; i < keys.length; i++) {
+				if (bgm[keys[i]].hour == currTime.getHours()) {
+					console.log(bgm[keys[i]])
+					audioSource.src = bgm[keys[i]].music_uri
+					audioHtml.load()
+					audioHtml.play()
+				}
+			}
+		})
+	}
 }
 
 function setTimeHtml() {
@@ -103,7 +106,7 @@ function setTimeHtml() {
 	let timeStr
 
 	if (inputBool) {
-
+		console.log("we in here")
 	} else {
 		hour = time.getHours()
 		month = time.getMonth()
@@ -115,6 +118,8 @@ function setTimeHtml() {
 	timeHtml.textContent = timeStr
 	descHtml.style.display = 'flex'
 	audioPlayer.style.display = 'block'
+
+	return time
 }
 
 async function fetchBGMJSON() {
@@ -203,6 +208,10 @@ function doStuff() {
 }
 
 window.addEventListener('load', checkGeolocation)
+submitBtn.addEventListener('click', () => {
+	inputBool = true
+	checkGeolocation()
+})
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
