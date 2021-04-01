@@ -14,7 +14,13 @@ After looking through the data, there are also three different versions for sunn
 
 # Optimizations
 
-## Apr 1, 2021 - v0.2 - New features
+## Apr 1, 2021 - v0.3 - Functionality > Features
+Rather than trying to fix the added features, I reverted the app to its basic function of taking the viewer's location to display the local date, time, and weather, and set the background image to a location-related image. However, it seems like the query to the Unsplash API is not getting correct images, so I'll have to rework that in the next few versions.
+
+### Other ideas
+I noticed that it's pretty difficult to adjust the volume on the default audio player, so I think my next version will focus on creating a custom audio player.
+
+## Mar 31, 2021 - v0.2 - New features
 It's starting to look more like a webapp, but missing some core functions.
 
 ### Fixes
@@ -31,7 +37,7 @@ It's starting to look more like a webapp, but missing some core functions.
 - Sizing issues on different sized screens
 
 
-## Mar 31, 2021 - v0.1 - YES IT FINALLY WORKS 
+## Mar 30, 2021 - v0.1 - YES IT FINALLY WORKS 
 I'm still considering this my 0.1 version, aka the "YES IT FINALLY WORKS" version. Some things I noticed that need updating.
 
 ### Functionality
