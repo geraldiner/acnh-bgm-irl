@@ -15,6 +15,10 @@
 	- For weather conditions like rain or snow, it would be cool to have actual weather sounds. Or maybe even sliders for ambient noises that the viewer could control and make it their own.
 */
 
+// API Keys
+const weatherApiKey = 'e0c580a040dd46a0829e6bf541d02ce4'
+const googleApiKey = 'AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
+
 // HTML variables from DOM
 
 let cityInput = document.querySelector('#cityInput')
