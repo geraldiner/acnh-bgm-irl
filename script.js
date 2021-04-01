@@ -1,3 +1,9 @@
+
+let lat
+let long
+
+//const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}};
+
 function checkGeolocation() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
@@ -8,18 +14,18 @@ function checkGeolocation() {
 function successFunction(position) {
 	lat = position.coords.latitude;
 	long = position.coords.longitude;
-	setupPage(lat, long)
+	setHtml(lat, long)
 }
 
 function errorFunction(e) {
 	console.log(e)
 }
 
-function setupPage(lat, long) {
+function setHtml(lat, long) {
 	let hTime = document.querySelector('#time')
 	let pLoc = document.querySelector('#location')
 	let audio = document.querySelector('#audio')
-  let source = document.querySelector('#audioSource');
+	let source = document.querySelector('#audioSource');
 
 	console.log(lat + "," + long)
 	let time = new Date()
@@ -32,7 +38,7 @@ function setupPage(lat, long) {
 
 	hTime.textContent = timeStr
 
-	fetchWeather(lat,long).then(weather => {
+	fetchWeather(lat, long, "", 'latlong').then(weather => {
 		let data = weather['data'][0]
 		let city = data.city_name
 		let state = data.state_code
@@ -46,10 +52,10 @@ function setupPage(lat, long) {
 		img.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
 		pLoc.appendChild(img)
 	})
-	
+
 	fetchBGMJSON().then(bgm => {
 		let keys = Object.keys(bgm)
-		for(let i = 0; i < keys.length; i++) {
+		for (let i = 0; i < keys.length; i++) {
 			if (bgm[keys[i]].hour == hour) {
 				console.log(bgm[keys[i]])
 				source.src = bgm[keys[i]].music_uri
@@ -67,10 +73,17 @@ async function fetchBGMJSON() {
 	return bgm
 }
 
-async function fetchWeather(lat,long) {
-	const endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
-	const response = await fetch(endpoint)
-	const weather = await response.json()
+async function fetchWeather(lat, long, city, queryType) {
+	let endpoint
+	let response
+	let weather
+	if (queryType == 'city') {
+		endpoint = `https://api.weatherbit.io/v2.0/current?city=${city}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
+	} else if (queryType == 'latlong') {
+		endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
+	}
+	response = await fetch(endpoint)
+	weather = await response.json()
 	return weather
 }
 
@@ -108,4 +121,36 @@ function geocodeLatLng(geocoder, map, infowindow) {
 	});
 }
 
-window.addEventListener('load',	checkGeolocation);//Check if browser supports W3C Geolocation API
+function doStuff() {
+	let hTime = document.querySelector('#time')
+	let pLoc = document.querySelector('#location')
+	let audio = document.querySelector('#audio')
+	let source = document.querySelector('#audioSource');
+	let cityInput
+	const btn = document.querySelector('#btn')
+	let locInput = document.querySelector('#city')
+	btn.addEventListener('click', () => {
+		console.log("HI")
+		cityInput = locInput.value
+		locInput.value = ''
+		console.log(cityInput)
+		fetchWeather("", "", cityInput, 'city').then(weather => {
+			let data = weather['data'][0]
+			let city = data.city_name
+			let state = data.state_code
+			let country = data.country_code
+			let temp = data.temp
+			let desc = data.weather.description
+			let icon = data.weather.icon
+			let code = data.weather.code
+			pLoc.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
+			let img = document.createElement('img')
+			img.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
+			pLoc.appendChild(img)
+		})
+	})
+}
+
+window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
+
+window.addEventListener('load', doStuff)
