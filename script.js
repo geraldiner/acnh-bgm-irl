@@ -22,20 +22,24 @@
 
 // HTML variables from DOM
 
-let cityInput
-let submitBtn
+let cityInput = document.querySelector('#cityInput')
+let submitBtn = document.querySelector('#btn')
 
-let timeHtml
-let locationHtml
-let weatherHtml
+let descHtml = document.querySelector('#description')
+let timeHtml = document.querySelector('#time')
+let locationHtml = document.querySelector('#location')
+let weatherDescHtml = document.querySelector('#weatherDesc')
+let weatherIconHtml = document.querySelector('#weatherIcon')
 
-let audioHtml
-let audioSource
+let audioPlayer = document.querySelector('#audioPlayer')
+let audioHtml = document.querySelector('#audio')
+let audioSource = document.querySelector('#audioSource')
 
 // Variables for processing
 
 let lat
 let long
+let inputBool = false
 
 const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {};
 
@@ -52,6 +56,7 @@ function checkGeolocation() {
 function successFunction(position) {
 	lat = position.coords.latitude;
 	long = position.coords.longitude;
+	console.log(lat, long)
 	setHtml(lat, long)
 }
 
@@ -60,15 +65,7 @@ function errorFunction(e) {
 }
 
 function setHtml(lat, long) {
-	console.log(lat + "," + long)
-	let time = new Date()
-	let hour = time.getHours()
-	let month = time.getMonth()
-	let date = time.getDate()
-	let year = time.getYear()
-
-	let timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true });
-
+	setTimeHtml()
 	fetchWeather(lat, long, "", 'latlong').then(weather => {
 		let data = weather['data'][0]
 		let city = data.city_name
@@ -78,23 +75,46 @@ function setHtml(lat, long) {
 		let desc = data.weather.description
 		let icon = data.weather.icon
 		let code = data.weather.code
-		locationHtml.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
-		let img = document.createElement('img')
-		img.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
-		locationHtml.appendChild(img)
+
+		weatherDescHtml.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
+		console.log(icon)
+		weatherIconHtml.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
 	})
 
-	fetchBGMJSON().then(bgm => {
-		let keys = Object.keys(bgm)
-		for (let i = 0; i < keys.length; i++) {
-			if (bgm[keys[i]].hour == hour) {
-				console.log(bgm[keys[i]])
-				audioSource.src = bgm[keys[i]].music_uri
-				//audio.load()
-				//audio.play()
-			}
-		}
-	})
+	// fetchBGMJSON().then(bgm => {
+	// 	let keys = Object.keys(bgm)
+	// 	for (let i = 0; i < keys.length; i++) {
+	// 		if (bgm[keys[i]].hour == hour) {
+	// 			console.log(bgm[keys[i]])
+	// 			audioSource.src = bgm[keys[i]].music_uri
+	// 			audioHtml.load()
+	// 			//audioHtml.play()
+	// 		}
+	// 	}
+	// })
+}
+
+function setTimeHtml() {
+	let time = new Date()
+	let hour
+	let month
+	let date
+	let year
+	let timeStr
+
+	if (inputBool) {
+
+	} else {
+		hour = time.getHours()
+		month = time.getMonth()
+		date = time.getDate()
+		year = time.getYear()
+
+		timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
+	}
+	timeHtml.textContent = timeStr
+	descHtml.style.display = 'flex'
+	audioPlayer.style.display = 'block'
 }
 
 async function fetchBGMJSON() {
@@ -182,20 +202,7 @@ function doStuff() {
 	})
 }
 
-window.addEventListener('load', () => {
-	// HTML variables from DOM
-
-	cityInput = document.querySelector('#cityInput')
-	submitBtn = document.querySelector('#btn')
-
-	timeHtml = document.querySelector('#time')
-	locationHtml = document.querySelector('#location')
-	weatherHtml = document.querySelector('#weather')
-
-	audioHtml = document.querySelector('#audio')
-	audioSource = document.querySelector('#audioSource')
-	checkGeolocation()
-})
+window.addEventListener('load', checkGeolocation)
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
