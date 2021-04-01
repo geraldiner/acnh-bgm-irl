@@ -22,15 +22,15 @@
 
 // HTML variables from DOM
 
-let cityInput = document.querySelector('#cityInput')
-let submitBtn = document.querySelector('#btn')
+let cityInput
+let submitBtn
 
-let timeHtml = document.querySelector('#time')
-let locationHtml = document.querySelector('#location')
-let weatherHtml = document.querySelector('#weather')
+let timeHtml
+let locationHtml
+let weatherHtml
 
-let audioHtml = document.querySelector('#audio')
-let audioSource = document.querySelector('#audioSource')
+let audioHtml
+let audioSource
 
 // Variables for processing
 
@@ -52,8 +52,7 @@ function checkGeolocation() {
 function successFunction(position) {
 	lat = position.coords.latitude;
 	long = position.coords.longitude;
-	console.log(lat, long)
-	// setHtml(lat, long)
+	setHtml(lat, long)
 }
 
 function errorFunction(e) {
@@ -61,11 +60,6 @@ function errorFunction(e) {
 }
 
 function setHtml(lat, long) {
-	let hTime = document.querySelector('#time')
-	let pLoc = document.querySelector('#location')
-	let audio = document.querySelector('#audio')
-	let source = document.querySelector('#audioSource');
-
 	console.log(lat + "," + long)
 	let time = new Date()
 	let hour = time.getHours()
@@ -74,8 +68,6 @@ function setHtml(lat, long) {
 	let year = time.getYear()
 
 	let timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true });
-
-	hTime.textContent = timeStr
 
 	fetchWeather(lat, long, "", 'latlong').then(weather => {
 		let data = weather['data'][0]
@@ -86,10 +78,10 @@ function setHtml(lat, long) {
 		let desc = data.weather.description
 		let icon = data.weather.icon
 		let code = data.weather.code
-		pLoc.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
+		locationHtml.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
 		let img = document.createElement('img')
 		img.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
-		pLoc.appendChild(img)
+		locationHtml.appendChild(img)
 	})
 
 	fetchBGMJSON().then(bgm => {
@@ -97,8 +89,8 @@ function setHtml(lat, long) {
 		for (let i = 0; i < keys.length; i++) {
 			if (bgm[keys[i]].hour == hour) {
 				console.log(bgm[keys[i]])
-				source.src = bgm[keys[i]].music_uri
-				audio.load()
+				audioSource.src = bgm[keys[i]].music_uri
+				//audio.load()
 				//audio.play()
 			}
 		}
@@ -190,7 +182,20 @@ function doStuff() {
 	})
 }
 
-window.addEventListener('load', checkGeolocation)
+window.addEventListener('load', () => {
+	// HTML variables from DOM
+
+	cityInput = document.querySelector('#cityInput')
+	submitBtn = document.querySelector('#btn')
+
+	timeHtml = document.querySelector('#time')
+	locationHtml = document.querySelector('#location')
+	weatherHtml = document.querySelector('#weather')
+
+	audioHtml = document.querySelector('#audio')
+	audioSource = document.querySelector('#audioSource')
+	checkGeolocation()
+})
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
