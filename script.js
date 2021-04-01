@@ -59,22 +59,25 @@ function successFunction(position) {
 	lat = position.coords.latitude;
 	long = position.coords.longitude;
 	inputBool = false
-	setHtml()
+	console.log("this is the end")
 }
 
 function setHtml(e) {
-	setWeatherHtml()
-	let time = setTimeHtml()
-	setBackgroundHtml()
-	setAudio(time)
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition((position) => {
+			lat = position.coords.latitude;
+			long = position.coords.longitude;
+			inputBool = false
+			setWeatherHtml()
+			let time = setTimeHtml
+			setBackgroundHtml()
+			setAudio()
+		});
+	}
 }
 
 function setWeatherHtml() {
-	if (weatherData == {}) {
-		console.log("this works here")
-	} else {
-		console.log("else statement")
-	}
+
 	fetchWeather(lat, long, '', 'latlong')
 
 	// Is there location access or not?
@@ -112,6 +115,7 @@ function setTimeHtml() {
 
 	if (hour != hourData) {
 		localStorage.setItem("hourData", JSON.stringify(hour))
+		setWeatherHtml()
 	}
 
 	if (inputBool || weatherData) {
@@ -139,7 +143,7 @@ function setAudio(time) {
 	fetchBGMJSON().then(bgm => {
 		let keys = Object.keys(bgm)
 		for (let i = 0; i < keys.length; i++) {
-			if (bgm[keys[i]].hour == time.getHours()) {
+			if (bgm[keys[i]].hour == hourData) {
 				let
 					weatherBGM = determineWeather()
 				if (weatherBGM == bgm[keys[i]].weather) {
@@ -261,7 +265,7 @@ function geocodeAddress(geocoder) {
 	});
 }
 
-window.addEventListener('load', checkGeolocation)
+window.addEventListener('load', setHtml)
 // locationForm.addEventListener('submit', (e) => {
 // 	e.preventDefault()
 // 	inputBool = true
