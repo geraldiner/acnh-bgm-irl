@@ -15,11 +15,6 @@
 	- For weather conditions like rain or snow, it would be cool to have actual weather sounds. Or maybe even sliders for ambient noises that the viewer could control and make it their own.
 */
 
-// API keys
-const weatherApiKey = 'e0c580a040dd46a0829e6bf541d02ce4'
-const googleApiKey = 'AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM'
-
-
 // HTML variables from DOM
 
 let cityInput = document.querySelector('#cityInput')
@@ -50,7 +45,7 @@ const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}
 */
 function checkGeolocation() {
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(successFunction)
+		navigator.geolocation.getCurrentPosition(successFunction);
 	}
 }
 
@@ -62,7 +57,6 @@ function successFunction(position) {
 	setHtml()
 }
 
-
 function setHtml(e) {
 	setWeatherHtml()
 	let time = setTimeHtml()
@@ -73,9 +67,13 @@ function setWeatherHtml() {
 	// Is there location access or not?
 	if (inputBool) {
 		//get weather data
-		fetchWeather('', '', cityInput.value, 'city')
-	} else if (!weatherData) {
-		fetchWeather(lat, long, "", 'latlong')
+		if (!weatherData || weatherData.city != cityInput.value) {
+			fetchWeather('', '', cityInput.value, 'city')
+		}
+	} else {
+		if (!weatherData) {
+			fetchWeather(lat, long, '', 'latlong')
+		}
 	}
 	weatherIconHtml.src = weatherData.img
 	weatherDescHtml.textContent = weatherData.str
@@ -89,20 +87,6 @@ function setTimeHtml() {
 	let year
 	let timeStr
 	let time = new Date()
-	let targetDate = new Date()
-	let timestamp = targetDate.getTime()/1000 + targetDate.getTimezoneOffset() * 60
-
-	if (inputBool) {
-		fetchTime(timestamp)
-			.then(info => {
-				let offsets = info.dstOffset * 1000 + info.rawOffset * 1000
-				time = new Date(timestamp * 1000 + offsets)
-				console.log(time)
-			})
-	} else {
-		
-	}
-
 	let options = { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true }
 
 	hour = time.getHours()
@@ -162,8 +146,9 @@ function determineWeather() {
 	return 'Sunny'
 }
 
-async function fetchTime(timestamp) {
-	let endpoint = `https://maps.googleapis.com/maps/api/timezone/json?location=${weatherData.lat},%20${weatherData.long}&timestamp=${timestamp}&key=${googleApiKey}`
+async function fetchTime(time, timestamp) {
+	let endpoint = `https://maps.googleapis.com/maps/api/timezone/json?location=${weatherData.lat},%20${weatherData.long}&timestamp=${timestamp}&key=AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM`
+	let localTime
 
 	const response = await fetch(endpoint)
 	const timeInfo = await response.json()
@@ -185,18 +170,16 @@ async function fetchWeather(lat, long, city, queryType) {
 	let splitCity
 
 	if (city) {
-		if (city.indexOf(', ') > 0) {
-			splitCity = city.split(", ")
-			for (let i = 0; i < splitCity.length; i++) {
-				splitCity[i].trim()
-			}
+		splitCity = city.split(", ")
+		for (let i = 0; i < splitCity.length; i++) {
+			splitCity[i].trim()
 		}
 	}
 
 	if (queryType == 'city') {
-		endpoint = splitCity ? `https://api.weatherbit.io/v2.0/current?city=${splitCity[0]}&country=${splitCity[1]}&units=I&key=${weatherApiKey}` : `https://api.weatherbit.io/v2.0/current?city=${city}&units=I&key=${weatherApiKey}`
+		endpoint = splitCity ? `https://api.weatherbit.io/v2.0/current?city=${splitCity[0]}&country=${splitCity[1]}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4` : `https://api.weatherbit.io/v2.0/current?city=${city}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	} else if (queryType == 'latlong') {
-		endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=${weatherApiKey}`
+		endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	}
 	response = await fetch(endpoint)
 	weather = await response.json().then(info => {
@@ -217,6 +200,7 @@ async function fetchWeather(lat, long, city, queryType) {
 		weatherData.str = str
 	})
 	localStorage.setItem("weatherData", JSON.stringify(weatherData))
+	locationForm.reset()
 }
 
 function geocodeAddress(geocoder) {
@@ -238,7 +222,6 @@ locationForm.addEventListener('submit', (e) => {
 })
 
 setInterval(setTimeHtml, 1000)
-setInterval(setWeatherHtml, 1800000)
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
