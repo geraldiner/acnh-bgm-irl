@@ -13,6 +13,25 @@ For those unfamiliar with Animal Crossing, one of the unique features of the gam
 After looking through the data, there are also three different versions for sunny, rainy, and snowy weather (though tbh it the rainy and snowy versions sound a lot alike..). This gave me the idea to find the weather data for the viewer's location using the coordinates via Geolocation and passing it through the Weatherbit API. 
 
 # Optimizations
+
+## Apr 1, 2021 - v0.2 - New features
+It's starting to look more like a webapp, but missing some core functions.
+
+### Fixes
+
+- Refactored a lot of the code to make it more modular
+- Added `css` to be better on the eyes
+- Time is being updated by the second
+- It now displays the time and date
+- It now accepts input from the viewer for a *city, country* and will display the time and weather for that location
+
+### Bugs
+- The page requires a refresh after the viewer inputs a location
+- After the viewer inputs a location, the time doesn't update, even after the refresh
+- Sizing issues on different sized screens
+
+
+## Mar 31, 2021 - v0.1 - YES IT FINALLY WORKS 
 I'm still considering this my 0.1 version, aka the "YES IT FINALLY WORKS" version. Some things I noticed that need updating.
 
 ### Functionality
