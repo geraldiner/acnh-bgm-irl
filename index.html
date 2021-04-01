@@ -17,8 +17,8 @@
 	<section class="wrap">
 		<section class="container">
 			<section id="description">
-				<h1 id="time"></h1>
 				<p id="location"></p>
+				<h1 id="time"></h1>
 				<div id="weather">
 					<img id="weatherIcon" src="" alt="Weather icon" />
 					<p id="weatherDesc"></p>
@@ -30,12 +30,12 @@
 				</section>
 			</section>
 			<section id="form">
-				<form>
+				<form id="locationForm">
 					<label for="city" id="cityLabel">Grant location access or enter a location manually to start the chill Animal
 						Crossing
 						tunes.</label>
 					<input type="text" name="city" id="cityInput" placeholder="Where are you? (city, country)" />
-					<button type="button" id="btn">Submit</button>
+					<input type="submit" id="btn" value="Submit"></input>
 				</form>
 			</section>
 

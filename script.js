@@ -8,12 +8,8 @@
 	- For viewers who'd like to be more private, they could enter their location info manually instead of allowing the site to access it. This would mean more cases to account for.
 	- On the same note, I don't think it's necessary to update the weather info as frequently as the time (ie. every minute/second vs every hour, respectively), so I could make use of localStorage somehow.
 
-	### Time-related
-	- The time doesn't actually update - it's stuck at the exact moment the viewer enters the site and then never updates again.
-	- Displaying the full day and date might be more helpful because it has more information.
 
 	### Design
-	- Maybe using a framework like Bootstrap will give it a nice clean look.
 	- Having a cool background image would be nice, something either related to the location, weather, Animal Crossing or some combination.
 
 	### Would be nice
@@ -24,6 +20,7 @@
 
 let cityInput = document.querySelector('#cityInput')
 let submitBtn = document.querySelector('#btn')
+let locationForm = document.querySelector('#locationForm')
 
 let descHtml = document.querySelector('#description')
 let timeHtml = document.querySelector('#time')
@@ -39,16 +36,19 @@ let audioSource = document.querySelector('#audioSource')
 
 let lat
 let long
-let inputBool = false
+let inputBool
 
-const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {};
+
+
+const locationData = JSON.parse(localStorage.getItem("locationData")) || {}
+const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}
 
 /* 
 	Check to see if the viewer will allow location access through the browser
 */
 function checkGeolocation() {
 	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+		navigator.geolocation.getCurrentPosition(successFunction);
 	}
 }
 
@@ -56,46 +56,29 @@ function checkGeolocation() {
 function successFunction(position) {
 	lat = position.coords.latitude;
 	long = position.coords.longitude;
-	console.log(lat, long)
-	setHtml(lat, long)
+	inputBool = false
+	setHtml()
 }
 
-function errorFunction(e) {
-	console.log("we in here")
-	console.log(e)
+function setHtml(e) {
+	setWeatherHtml()
+	let time = setTimeHtml()
+	setAudio(time)
 }
 
-function setHtml(lat, long) {
+function setWeatherHtml() {
+	// Is there location access or not?
 	if (inputBool) {
-
+		//get weather data
+		if (!weatherData || weatherData.city != cityInput.value) {
+			fetchWeather('', '', cityInput.value, 'city')
+		}
 	} else {
-		let currTime = setTimeHtml()
-		fetchWeather(lat, long, "", 'latlong').then(weather => {
-			let data = weather['data'][0]
-			let city = data.city_name
-			let state = data.state_code
-			let country = data.country_code
-			let temp = data.temp
-			let desc = data.weather.description
-			let icon = data.weather.icon
-			let code = data.weather.code
-
-			weatherDescHtml.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
-			weatherIconHtml.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
-		})
-
-		fetchBGMJSON().then(bgm => {
-			let keys = Object.keys(bgm)
-			for (let i = 0; i < keys.length; i++) {
-				if (bgm[keys[i]].hour == currTime.getHours()) {
-					console.log(bgm[keys[i]])
-					audioSource.src = bgm[keys[i]].music_uri
-					audioHtml.load()
-					audioHtml.play()
-				}
-			}
-		})
+		fetchWeather(lat, long, '', 'latlong')
 	}
+	weatherIconHtml.src = weatherData.img
+	weatherDescHtml.textContent = weatherData.str
+	descHtml.style.display = 'flex'
 }
 
 function setTimeHtml() {
@@ -106,21 +89,55 @@ function setTimeHtml() {
 	let year
 	let timeStr
 
-	if (inputBool) {
-		console.log("we in here")
-	} else {
-		hour = time.getHours()
-		month = time.getMonth()
-		date = time.getDate()
-		year = time.getYear()
+	hour = time.getHours()
+	month = time.getMonth()
+	date = time.getDate()
+	year = time.getYear()
 
-		timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
-	}
+	timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
+
 	timeHtml.textContent = timeStr
-	descHtml.style.display = 'flex'
-	audioPlayer.style.display = 'block'
 
 	return time
+}
+
+function setAudio(time) {
+	fetchBGMJSON().then(bgm => {
+		let keys = Object.keys(bgm)
+		for (let i = 0; i < keys.length; i++) {
+			if (bgm[keys[i]].hour == time.getHours()) {
+				let weatherBGM = determineWeather()
+				if (weatherBGM == bgm[keys[i]].weather) {
+					audioSource.src = bgm[keys[i]].music_uri
+					audioHtml.load()
+					audioHtml.play()
+				}
+
+			}
+		}
+	})
+	audioPlayer.style.display = 'block'
+}
+
+function determineWeather() {
+	const rainCodes = ['rain', 'drizzle']
+	const snowCodes = ['snow', 'sleet', 'hail', 'flurries']
+
+	for (let i = 0; i < rainCodes.length; i++) {
+		if (weatherData.desc.includes(rainCodes[i])) {
+			return 'Rainy'
+			break
+		}
+	}
+
+	for (let i = 0; i < snowCodes.length; i++) {
+		if (weatherData.desc.includes(snowCodes[i])) {
+			return 'Snowy'
+			break
+		}
+	}
+
+	return 'Sunny'
 }
 
 async function fetchBGMJSON() {
@@ -134,14 +151,46 @@ async function fetchWeather(lat, long, city, queryType) {
 	let endpoint
 	let response
 	let weather
+	let weatherData
 	if (queryType == 'city') {
 		endpoint = `https://api.weatherbit.io/v2.0/current?city=${city}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	} else if (queryType == 'latlong') {
 		endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	}
 	response = await fetch(endpoint)
-	weather = await response.json()
-	return weather
+	weather = await response.json().then(info => {
+		let data = info['data'][0]
+		weatherData = {
+			'lat': data.lat,
+			'long': data.lon,
+			'city': data.city_name,
+			'state': data.state_code,
+			'country': data.country_code,
+			'temp': data.temp,
+			'desc': data.weather.description,
+			'img': `https://www.weatherbit.io/static/img/icons/${data.weather.icon}.png`,
+			'code': data.weather.code,
+		}
+		let str = `In ${weatherData.city}, it's ${weatherData.temp}°F. There might be ${weatherData.desc}.`
+		weatherData.str = str
+	})
+	localStorage.setItem("weatherData", JSON.stringify(weatherData))
+	locationForm.reset()
+}
+
+function formatWeather(data) {
+	weatherData = {
+		'lat': data.lat,
+		'long': data.lon,
+		'city': data.city_name,
+		'state': data.state_code,
+		'country': data.country_code,
+		'temp': data.temp,
+		'desc': data.weather.description,
+		'img': `https://www.weatherbit.io/static/img/icons/${data.weather.icon}.png`,
+		'code': data.weather.code,
+		'str': `In ${this.city}, it's ${this.temp}°F. There might be ${this.desc}.`
+	}
 }
 
 //setInterval(checkGeolocation, 1000)
@@ -178,41 +227,14 @@ function geocodeLatLng(geocoder, map, infowindow) {
 	});
 }
 
-function doStuff() {
-	let hTime = document.querySelector('#time')
-	let pLoc = document.querySelector('#location')
-	let audio = document.querySelector('#audio')
-	let source = document.querySelector('#audioSource');
-	let cityInput
-	const btn = document.querySelector('#btn')
-	let locInput = document.querySelector('#city')
-	btn.addEventListener('click', () => {
-		console.log("HI")
-		cityInput = locInput.value
-		locInput.value = ''
-		console.log(cityInput)
-		fetchWeather("", "", cityInput, 'city').then(weather => {
-			let data = weather['data'][0]
-			let city = data.city_name
-			let state = data.state_code
-			let country = data.country_code
-			let temp = data.temp
-			let desc = data.weather.description
-			let icon = data.weather.icon
-			let code = data.weather.code
-			pLoc.textContent = `In ${city}, ${state}, ${country}, it is ${temp}°F. There might be ${desc}.`
-			let img = document.createElement('img')
-			img.src = `https://www.weatherbit.io/static/img/icons/${icon}.png`
-			pLoc.appendChild(img)
-		})
-	})
-}
-
 window.addEventListener('load', checkGeolocation)
-submitBtn.addEventListener('click', () => {
+locationForm.addEventListener('submit', (e) => {
+	e.preventDefault()
 	inputBool = true
-	checkGeolocation()
+	setHtml(e)
 })
+
+setInterval(setTimeHtml, 1000)
 
 // window.addEventListener('load', checkGeolocation);//Check if browser supports W3C Geolocation API
 
