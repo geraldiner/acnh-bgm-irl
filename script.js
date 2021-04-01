@@ -74,7 +74,9 @@ function setWeatherHtml() {
 			fetchWeather('', '', cityInput.value, 'city')
 		}
 	} else {
-		fetchWeather(lat, long, '', 'latlong')
+		if (!weatherData) {
+			fetchWeather(lat, long, '', 'latlong')
+		}
 	}
 	weatherIconHtml.src = weatherData.img
 	weatherDescHtml.textContent = weatherData.str
@@ -82,21 +84,26 @@ function setWeatherHtml() {
 }
 
 function setTimeHtml() {
-	let time = new Date()
-	let hour
-	let month
-	let date
-	let year
-	let timeStr
+	if (inputBool) {
 
-	hour = time.getHours()
-	month = time.getMonth()
-	date = time.getDate()
-	year = time.getYear()
+	} else {
 
-	timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
+	}
+	// let time = new Date()
+	// let hour
+	// let month
+	// let date
+	// let year
+	// let timeStr
 
-	timeHtml.textContent = timeStr
+	// hour = time.getHours()
+	// month = time.getMonth()
+	// date = time.getDate()
+	// year = time.getYear()
+
+	// timeStr = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', second: 'numeric', month: 'long', day: '2-digit', year: 'numeric', hour12: true });
+
+	// timeHtml.textContent = timeStr
 
 	return time
 }
@@ -152,11 +159,21 @@ async function fetchWeather(lat, long, city, queryType) {
 	let response
 	let weather
 	let weatherData
+	let splitCity
+
+	if (city) {
+		splitCity = city.split(", ")
+		for (let i = 0; i < splitCity.length; i++) {
+			splitCity[i].trim()
+		}
+	}
+
 	if (queryType == 'city') {
-		endpoint = `https://api.weatherbit.io/v2.0/current?city=${city}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
+		endpoint = splitCity ? `https://api.weatherbit.io/v2.0/current?city=${splitCity[0]}&country=${splitCity[1]}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4` : `https://api.weatherbit.io/v2.0/current?city=${city}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	} else if (queryType == 'latlong') {
 		endpoint = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${long}&units=I&key=e0c580a040dd46a0829e6bf541d02ce4`
 	}
+	console.log(endpoint)
 	response = await fetch(endpoint)
 	weather = await response.json().then(info => {
 		let data = info['data'][0]
