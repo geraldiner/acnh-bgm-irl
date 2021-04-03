@@ -28,8 +28,6 @@ const hourData = JSON.parse(localStorage.getItem("hourData")) || 0
 const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}
 const bgImgData = JSON.parse(localStorage.getItem("bgImgData")) || {}
 
-let firstRun = true;
-
 // functions
 function checkGeolocation() {
 	if (navigator.geolocation) {
