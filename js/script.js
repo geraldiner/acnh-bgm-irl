@@ -51,7 +51,9 @@ function errorFunction() {
 }
 
 function setHtml(coords) {
-	setWeatherHtml(coords)
+	if (!weatherData.lat) {
+
+	}
 }
 
 function setWeatherHtml(coords) {
