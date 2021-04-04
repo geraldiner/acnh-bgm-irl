@@ -23,12 +23,8 @@ const audioPlayer = document.querySelector('#audioPlayer')
 const audioHtml = document.querySelector('#audio')
 const audioSource = document.querySelector('#audioSource')
 
-const coordinates = JSON.parse(localStorage.getItem("coordinates")) || {}
-const hourData = JSON.parse(localStorage.getItem("hourData")) || 0
-const weatherData = JSON.parse(localStorage.getItem("weatherData")) || {}
-const bgImgData = JSON.parse(localStorage.getItem("bgImgData")) || {}
 
-// functions
+// Check if the browser supports Geolocation
 function checkGeolocation() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
@@ -37,50 +33,82 @@ function checkGeolocation() {
 	}
 }
 
+// Success callback for Geolocation function, gets the coordinates for the viewers position and uses it to set the HTML for all the information received from APIs and the browser
 function successFunction(position) {
 	const coords = {
 		'lat': position.coords.latitude,
 		'long': position.coords.longitude
 	}
 	setHtml(coords)
-	localStorage.setItem("coordinates", JSON.stringify(coords))
 }
 
+// Error callback for Geolocation function, alerts the viewer with a reminder that location access is needed to continue
 function errorFunction() {
 	alert("Please allow location access to continue.")
 }
 
-function setHtml(coords) {
-	if (!weatherData.lat) {
-		setWeatherHtml(coords)
+// Sets the different parts of the HTML based on the information being received from APIs and the browser: 1) weather, 2) background image, 3) time, 4) ACNH audio
+async function setHtml(coords) {
+	let weatherData = await setWeatherHtml(coords)
+	await setBackgroundHtml(weatherData.city)
+	let time = setTimeHtml()
+	setAudioHtml(time, weatherData.desc)
+}
+
+// Specifically focuses on setting the weather information in the HTML, returns the data to be used by other functions
+async function setWeatherHtml(coords) {
+	let weatherData = await fetchWeather(coords)
+	return processWeatherData(weatherData)
+}
+
+// Processes the info received from the weatherbit API and displays it in the DOM, returns a new object with only the information used for this app to be used by other functions
+function processWeatherData(weatherData) {
+	let data = weatherData.data[0]
+	let weatherInfo = {
+		'lat': data.lat,
+		'long': data.lon,
+		'timezone': data.timezone,
+		'city': data.city_name,
+		'state': data.state_code,
+		'country': data.country_code,
+		'temp': data.temp,
+		'desc': data.weather.description,
+		'img': `https://www.weatherbit.io/static/img/icons/${data.weather.icon}.png`,
+		'code': data.weather.code,
 	}
+	let str = `In ${weatherInfo.city}, it's ${weatherInfo.temp}°F. There might be ${weatherInfo.desc}.`
+	weatherInfo.str = str
+	weatherIconHtml.src = weatherInfo.img
+	weatherDescHtml.textContent = weatherInfo.str
+	descHtml.style.display = 'flex'
+	document.querySelector('.container').style.justifyContent = 'center'
+	return weatherInfo
 }
 
-function setWeatherHtml(coords) {
-	fetchWeather(coords)
-
+// Specifically focuses on setting the background image in the HTML
+async function setBackgroundHtml(city) {
+	let bgImgData = await fetchPhoto(city)
+	processBgImgData(bgImgData)
 }
 
-function setBackgroundHtml(city) {
-	fetchPhoto(city)
-		.then(info => {
-			let data = info.results[0]
-			let bgImgInfo = {
-				'alt': data.alt_information,
-				'links': data.links,
-				'urls': data.urls,
-				'author': data.user
-			}
-			body.style.background = `url('${bgImgInfo.urls.full}')`
-			body.style.backgroundAttachment = 'fixed'
-			body.style.backgroundRepeat = 'no-repeat'
-			body.style.backgroundPositionX = 'center'
-			body.style.backgroundPositionY = 'center'
-			body.style.backgroundSize = 'cover'
-			localStorage.setItem("bgImgData", JSON.stringify(bgImgInfo))
-		})
+// Processes the info received from the Unsplash API and displays it in the DOM
+function processBgImgData(bgImgData) {
+	let data = bgImgData.results[0]
+	let bgImgInfo = {
+		'alt': data.alt_information,
+		'links': data.links,
+		'urls': data.urls,
+		'author': data.user
+	}
+	body.style.background = `url('${bgImgInfo.urls.full}')`
+	body.style.backgroundAttachment = 'fixed'
+	body.style.backgroundRepeat = 'no-repeat'
+	body.style.backgroundPositionX = 'center'
+	body.style.backgroundPositionY = 'center'
+	body.style.backgroundSize = 'cover'
 }
 
+// Specifically focuses on setting the time information in the HTML using the Date object, returns it to be used by other functions
 function setTimeHtml() {
 	let hour, month, date, year, timeStr
 	let time = new Date()
@@ -92,33 +120,32 @@ function setTimeHtml() {
 	year = time.getYear()
 	timeStr = time.toLocaleString('en-US', options);
 	timeHtml.textContent = timeStr
-
-	localStorage.setItem("hourData", JSON.stringify(hour))
-
-	if (hour !== hourData) {
-		localStorage.setItem("hourData", JSON.stringify(hour))
-		setWeatherHtml(coordinates)
-	}
 	return time
 }
 
-function setAudio(time, weatherDesc) {
-	fetchBGMJSON().then(bgm => {
-		let keys = Object.keys(bgm)
-		for (let i = 0; i < keys.length; i++) {
-			if (bgm[keys[i]].hour == hourData) {
-				let weatherBGM = determineWeather(weatherDesc)
-				if (weatherBGM == bgm[keys[i]].weather) {
-					audioSource.src = bgm[keys[i]].music_uri
-					audioHtml.load()
-					audioPlayer.style.display = 'block'
-					audioHtml.play()
-				}
-			}
-		}
-	})
+// Specifically focuses on setting the audio information in the HTML
+async function setAudioHtml(time, weatherDesc) {
+	let bgmData = await fetchBGMJSON()
+	processAudioData(time, bgmData, weatherDesc)
 }
 
+// Processes the info received from the ACNH API and displays it in the DOM based on time and weather
+function processAudioData(time, bgmData, weatherDesc) {
+	let keys = Object.keys(bgmData)
+	for (let i = 0; i < keys.length; i++) {
+		if (bgmData[keys[i]].hour == time.getHours()) {
+			let weatherBGM = determineWeather(weatherDesc)
+			if (weatherBGM == bgmData[keys[i]].weather) {
+				audioSource.src = bgmData[keys[i]].music_uri
+				audioHtml.load()
+				audioPlayer.style.display = 'block'
+				audioHtml.play()
+			}
+		}
+	}
+}
+
+// Takes the weather description and returns the audio name that most closely matches it
 function determineWeather(weatherDesc) {
 	const rainCodes = ['rain', 'drizzle']
 	const snowCodes = ['snow', 'sleet', 'hail', 'flurries']
@@ -139,42 +166,19 @@ function determineWeather(weatherDesc) {
 }
 
 
-// async functions
+// Fetches data from the weatherbit API based on the viewer's location coordinates
 async function fetchWeather(coords) {
 	let endpoint = `https://api.weatherbit.io/v2.0/current?lat=${coords.lat}&lon=${coords.long}&units=I&key=${apikeys.WEATHER_API_KEY}`
 	try {
 		const weatherStream = await fetch(endpoint)
 		const weatherJson = await weatherStream.json()
-			.then(info => {
-				let data = info['data'][0]
-				let weatherInfo = {
-					'lat': data.lat,
-					'long': data.lon,
-					'timezone': data.timezone,
-					'city': data.city_name,
-					'state': data.state_code,
-					'country': data.country_code,
-					'temp': data.temp,
-					'desc': data.weather.description,
-					'img': `https://www.weatherbit.io/static/img/icons/${data.weather.icon}.png`,
-					'code': data.weather.code,
-				}
-				let str = `In ${weatherInfo.city}, it's ${weatherInfo.temp}°F. There might be ${weatherInfo.desc}.`
-				weatherInfo.str = str
-				weatherIconHtml.src = weatherInfo.img
-				weatherDescHtml.textContent = weatherInfo.str
-				descHtml.style.display = 'flex'
-				document.querySelector('.container').style.justifyContent = 'center'
-				let time = setTimeHtml()
-				setAudio(time, weatherInfo.desc)
-				setBackgroundHtml(weatherInfo.city)
-				localStorage.setItem("weatherData", JSON.stringify(weatherInfo))
-			})
-	} catch (err) {
-		return { Error: err.stack }
+		return weatherJson
+	} catch (error) {
+		return { Error: error.stack }
 	}
 }
 
+// Fetches data from the Unsplash API based on the viewer's city location
 async function fetchPhoto(city) {
 	let endpoint = `https://api.unsplash.com/search/photos?page=1&query=${city}&client_id=${apikeys.UNSPLASH_ACCESS_KEY}&orientation=landscape`
 	endpoint = endpoint.replace(/\s/g, "%20")
@@ -187,6 +191,7 @@ async function fetchPhoto(city) {
 	}
 }
 
+// Fetches data from the ACNH API's json file for hourly BGM music
 async function fetchBGMJSON() {
 	const endpoint = 'https://raw.githubusercontent.com/alexislours/ACNHAPI/master/hourly.json'
 	try {
@@ -205,22 +210,13 @@ setInterval(setTimeHtml, 1000)
 /*
 
 1. get the location from the viewer - comes as coordinates
-2. get the time from the viewer - date object
-3. get the weather from the viewer based on the coordinates
-4. get a related image based on the location of the viewer
+2. get the weather from the viewer based on the coordinates
+3. get a related image based on the location of the viewer
+4. get the time from the viewer - date object
 5. get the audio based on the time & weather
 6. place everything in the dom
 - display date & time every second
 - diplay background image
 - start playing audio
 
-
-async function fetchTime(time, timestamp) {
-	let endpoint = `https://maps.googleapis.com/maps/api/timezone/json?location=${weatherData.lat},%20${weatherData.long}&timestamp=${timestamp}&key=AIzaSyAM_a6zpQL7fYCeqvSXMnK0-wOpdXBqizM`
-	let localTime
-
-	const response = await fetch(endpoint)
-	const timeInfo = await response.json()
-	return timeInfo
-}
 */
