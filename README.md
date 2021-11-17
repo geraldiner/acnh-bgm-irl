@@ -69,4 +69,14 @@ I consider this one of my mini passion projects. I love playing Animal Crossing,
 # Other Projects:
 Take a look at other cool stuff I've worked on:
  
-**JS Challenges:** https://geraldiner.com/jschallenges/
+**JS Challenges:** https://geraldiner.com/jschallenges## Other Projects
+
+Check out other stuff I've worked on:
+
+**Rehabitter:** https://github.com/geraldiner/rehabitter
+
+**K.K. Radio:** https://github.com/geraldiner/kk-radio
+
+**Interactive Piano:** https://github.com/geraldiner/piano
+
+**Pom Poko Pomodoro:** https://github.com/geraldiner/pom-poko-pomodoro
