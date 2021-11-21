@@ -65,6 +65,7 @@ I'm still considering this my 0.1 version, aka the "YES IT FINALLY WORKS" versio
 I consider this one of my mini passion projects. I love playing Animal Crossing, so finding an API to do cool stuff with got me hyped about coding. I definitely got to refresh my knowledge of working on APIs. Especially with the new syntax, it was a real challenge to get the data back correctly. 
  
 
+
 ## Other Projects
 
 Check out other stuff I've worked on:
