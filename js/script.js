@@ -7,9 +7,6 @@
 
 */
 
-// Get keys
-import apikeys from './apikeys.js'
-
 
 // get DOM elements
 const body = document.querySelector('body')
@@ -168,7 +165,7 @@ function determineWeather(weatherDesc) {
 
 // Fetches data from the weatherbit API based on the viewer's location coordinates
 async function fetchWeather(coords) {
-	let endpoint = `https://api.weatherbit.io/v2.0/current?lat=${coords.lat}&lon=${coords.long}&units=I&key=${apikeys.WEATHER_API_KEY}`
+	let endpoint = `https://api.weatherbit.io/v2.0/current?lat=${coords.lat}&lon=${coords.long}&units=I&key=${config.WEATHER_API_KEY}`
 	try {
 		const weatherStream = await fetch(endpoint)
 		const weatherJson = await weatherStream.json()
@@ -180,7 +177,7 @@ async function fetchWeather(coords) {
 
 // Fetches data from the Unsplash API based on the viewer's city location
 async function fetchPhoto(city) {
-	let endpoint = `https://api.unsplash.com/search/photos?page=1&query=${city}&client_id=${apikeys.UNSPLASH_ACCESS_KEY}&orientation=landscape`
+	let endpoint = `https://api.unsplash.com/search/photos?page=1&query=${city}&client_id=${config.UNSPLASH_ACCESS_KEY}&orientation=landscape`
 	endpoint = endpoint.replace(/\s/g, "%20")
 	try {
 		let photoStream = await fetch(endpoint)
