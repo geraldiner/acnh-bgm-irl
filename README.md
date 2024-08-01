@@ -75,6 +75,7 @@ I consider this one of my mini passion projects. I love playing Animal Crossing,
 
 
 
+
 ## Other Projects
 
 Check out other stuff I've worked on:
