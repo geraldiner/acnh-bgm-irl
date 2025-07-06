@@ -3,3 +3,8 @@ index-test.html
 .vscode
 weatherapi.js
 unsplash.js
+node_modules
+.netlify
+.svelte-kit
+build
+.env
