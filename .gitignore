@@ -1,10 +1,24 @@
-index-test.html
-.replit
-.vscode
-weatherapi.js
-unsplash.js
+test-results
 node_modules
+
+# Output
+.output
+.vercel
 .netlify
-.svelte-kit
-build
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
 .env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

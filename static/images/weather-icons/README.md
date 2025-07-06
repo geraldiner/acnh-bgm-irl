@@ -1,0 +1,1 @@
+All credit to [Bas Milius](https://github.com/basmilius/weather-icons).
