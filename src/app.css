@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@layer base {
+	* {
+		margin: 0;
+		padding: 0;
+	}
+
+	h1 {
+		@apply my-5 text-5xl font-bold;
+	}
+
+	h2 {
+		@apply my-4 text-4xl font-bold;
+	}
+
+	h3 {
+		@apply my-3 text-3xl font-bold;
+	}
+
+	h4 {
+		@apply my-2 text-2xl font-bold;
+	}
+
+	h5 {
+		@apply my-1 text-xl font-bold;
+	}
+
+	h6 {
+		@apply my-1 text-lg font-bold;
+	}
+
+	p {
+		@apply my-4;
+	}
+
+	a {
+		@apply text-blue-500 underline underline-offset-2;
+	}
+
+	a:hover {
+		@apply text-blue-500 underline underline-offset-4;
+	}
+
+	button {
+		@apply cursor-pointer;
+	}
+}
+
+@layer components {
+	header nav h3 {
+		@apply m-0;
+	}
+
+	header nav h3 a {
+		@apply no-underline;
+	}
+
+	header nav a {
+		@apply text-gray-950 underline underline-offset-2;
+	}
+
+	header nav a.active {
+		@apply font-semibold text-amber-800;
+	}
+
+	header nav a:hover {
+		@apply text-blue-500 underline-offset-4;
+	}
+
+	footer a,
+	footer nav a,
+	footer nav button {
+		@apply text-gray-950 underline underline-offset-2;
+	}
+
+	footer a:hover,
+	footer nav a:hover,
+	footer nav button:hover {
+		@apply text-blue-500 underline underline-offset-4;
+	}
+}

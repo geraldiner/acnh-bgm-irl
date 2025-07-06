@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Animal Crossing BGM IRL</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link ref="stylesheet" href="normalize.css/normalize.css" />
+		<link
+			rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
+	</head>
+
+	<body>
+		<section class="wrap">
+			<section class="container">
+				<section id="instructions">
+					<p for="city" id="cityLabel">
+						Please grant location access to start the chill Animal Crossing tunes.
+					</p>
+				</section>
+				<section id="description">
+					<p id="location"></p>
+					<h1 id="time"></h1>
+					<div id="weather">
+						<img id="weatherIcon" src="" alt="Weather icon" />
+						<p id="weatherDesc"></p>
+					</div>
+					<section id="audioPlayer">
+						<audio id="audio" name="media" controls loop>
+							<source id="audioSource" src="" type="audio/mpeg" />
+						</audio>
+					</section>
+				</section>
+			</section>
+		</section>
+		<footer>&copy; <a href="https://github.com/geraldiner">github/@geraldine</a></footer>
+		<script type="module" src="js/script.js"></script>
+	</body>
+</html>
